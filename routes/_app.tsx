@@ -1,4 +1,8 @@
 import { isDailyPathname } from "@/lib/site/paths.ts";
+import {
+  SERVICE_WORKER_PATH,
+  SERVICE_WORKER_REGISTER_PATH,
+} from "@/lib/site/pwa.ts";
 import { define } from "../utils.ts";
 import {
   buildPageTitle,
@@ -37,6 +41,11 @@ export default define.page(function App({ Component, url }) {
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <script
+          src={SERVICE_WORKER_REGISTER_PATH}
+          defer
+          data-sw={SERVICE_WORKER_PATH}
+        />
       </head>
       <body
         style={{

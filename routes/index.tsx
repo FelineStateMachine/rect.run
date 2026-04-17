@@ -1,6 +1,7 @@
 import { listAvailablePuzzleDates } from "@/lib/shikaku/catalog.ts";
 import { buildDailyPath } from "@/lib/site/paths.ts";
 import { define } from "../utils.ts";
+import OfflineBadge from "../islands/OfflineBadge.tsx";
 
 export default define.page(function Home() {
   const latest = listAvailablePuzzleDates().at(-1) ??
@@ -11,6 +12,7 @@ export default define.page(function Home() {
       <div class="shikaku-home__frame">
         <section class="shikaku-home__masthead">
           <p class="shikaku-home__brand">FelineStateMachine</p>
+          <OfflineBadge />
         </section>
 
         <section class="shikaku-home__hero">
