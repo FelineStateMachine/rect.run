@@ -9,7 +9,7 @@ export default define.page(function Home() {
     <main class="shikaku-home shikaku-app-shell">
       <div class="shikaku-home__frame">
         <section class="shikaku-home__masthead">
-          <p class="shikaku-home__brand">rect.run</p>
+          <p class="shikaku-home__brand">FelineStateMachine</p>
         </section>
 
         <section class="shikaku-home__hero">
