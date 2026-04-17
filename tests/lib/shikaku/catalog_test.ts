@@ -1,26 +1,40 @@
-import { assertEquals, assertExists } from "@std/assert";
+import { assertEquals, assertExists, assertNotEquals } from "@std/assert";
 
 import {
-  getPuzzleByDate,
+  getPuzzleByDateIndex,
   listAvailablePuzzleDates,
 } from "@/lib/shikaku/catalog.ts";
 
-Deno.test("getPuzzleByDate returns a deterministic generated puzzle for a valid date", () => {
-  const puzzle = getPuzzleByDate("2026-04-16");
+Deno.test("getPuzzleByDateIndex returns a deterministic generated puzzle for a valid date and streak index", () => {
+  const puzzle = getPuzzleByDateIndex("2026-04-16", 0);
 
   assertExists(puzzle);
-  assertEquals(puzzle.id, "daily-2026-04-16");
+  assertEquals(puzzle.id, "daily-2026-04-16-0");
   assertEquals(puzzle.width, 8);
   assertEquals(puzzle.height, 8);
-  assertEquals(puzzle.seed, "2026-04-16");
+  assertEquals(puzzle.seed, "2026-04-16:0");
+  assertEquals(puzzle.streakIndex, 0);
 });
 
-Deno.test("getPuzzleByDate rejects invalid date slugs", () => {
-  assertEquals(getPuzzleByDate("not-a-date"), null);
+Deno.test("getPuzzleByDateIndex changes the puzzle when the streak index changes", () => {
+  const first = getPuzzleByDateIndex("2026-04-16", 0);
+  const second = getPuzzleByDateIndex("2026-04-16", 1);
+
+  assertExists(first);
+  assertExists(second);
+  assertNotEquals(first.seed, second.seed);
+  assertNotEquals(first.id, second.id);
 });
 
-Deno.test("listAvailablePuzzleDates returns today by default", () => {
-  assertEquals(listAvailablePuzzleDates(), [
-    new Date().toISOString().slice(0, 10),
+Deno.test("getPuzzleByDateIndex rejects invalid date slugs or negative indexes", () => {
+  assertEquals(getPuzzleByDateIndex("not-a-date", 0), null);
+  assertEquals(getPuzzleByDateIndex("2026-04-16", -1), null);
+});
+
+Deno.test("listAvailablePuzzleDates returns the streak start date through a provided day", () => {
+  assertEquals(listAvailablePuzzleDates("2026-04-18"), [
+    "2026-04-16",
+    "2026-04-17",
+    "2026-04-18",
   ]);
 });

@@ -40,6 +40,7 @@ export interface PlacedRectangle extends RectanglePlacement {
 export interface ShikakuPuzzle {
   id: string;
   date: string;
+  streakIndex: number;
   width: number;
   height: number;
   givens: PuzzleGiven[];

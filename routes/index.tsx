@@ -1,7 +1,8 @@
 import { listAvailablePuzzleDates } from "@/lib/shikaku/catalog.ts";
-import { buildDailyPath } from "@/lib/site/paths.ts";
 import { define } from "../utils.ts";
+import DailyStackLink from "../islands/DailyStackLink.tsx";
 import OfflineBadge from "../islands/OfflineBadge.tsx";
+import ShareDailyStackButton from "../islands/ShareDailyStreakButton.tsx";
 
 export default define.page(function Home() {
   const latest = listAvailablePuzzleDates().at(-1) ??
@@ -26,13 +27,8 @@ export default define.page(function Home() {
               </p>
             </div>
             <div class="shikaku-home__actions">
-              <a
-                class="shikaku-home__action shikaku-home__action--gold"
-                href={buildDailyPath(latest)}
-              >
-                <span class="shikaku-home__action-kicker">/ START</span>
-                <strong>Play</strong>
-              </a>
+              <DailyStackLink fallbackDate={latest} />
+              <ShareDailyStackButton date={latest} />
             </div>
           </div>
 

@@ -75,10 +75,11 @@ Deno.test("generated puzzle covers the full board and respects clue area invaria
   assertEquals(covered.size, puzzle.width * puzzle.height);
 });
 
-Deno.test("createPuzzleFromDailySeed exposes date-based ids", () => {
-  const puzzle = createPuzzleFromDailySeed("2026-04-16");
+Deno.test("createPuzzleFromDailySeed exposes date and streak-based ids", () => {
+  const puzzle = createPuzzleFromDailySeed("2026-04-16", 3);
 
   assertEquals(puzzle.date, "2026-04-16");
-  assertEquals(puzzle.id, "daily-2026-04-16");
-  assertEquals(typeof puzzle.seed, "string");
+  assertEquals(puzzle.streakIndex, 3);
+  assertEquals(puzzle.id, "daily-2026-04-16-3");
+  assertEquals(puzzle.seed, "2026-04-16:3");
 });

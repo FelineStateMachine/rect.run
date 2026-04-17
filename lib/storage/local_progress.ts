@@ -6,8 +6,8 @@ import {
 
 const STORAGE_NAMESPACE = "shikaku:v1";
 
-export function buildProgressKey(date: string): string {
-  return `${STORAGE_NAMESPACE}:progress:${date}`;
+export function buildProgressKey(puzzleId: string): string {
+  return `${STORAGE_NAMESPACE}:progress:${puzzleId}`;
 }
 
 export function buildHistoryKey(): string {
@@ -16,9 +16,9 @@ export function buildHistoryKey(): string {
 
 export function loadPuzzleProgress(
   storage: Pick<Storage, "getItem">,
-  date: string,
+  puzzleId: string,
 ): PuzzleProgress | null {
-  const raw = storage.getItem(buildProgressKey(date));
+  const raw = storage.getItem(buildProgressKey(puzzleId));
   if (raw === null) return null;
 
   try {
@@ -32,7 +32,10 @@ export function savePuzzleProgress(
   storage: Pick<Storage, "setItem">,
   progress: PuzzleProgress,
 ): void {
-  storage.setItem(buildProgressKey(progress.date), JSON.stringify(progress));
+  storage.setItem(
+    buildProgressKey(progress.puzzleId),
+    JSON.stringify(progress),
+  );
 }
 
 export function archiveProgress(
@@ -42,7 +45,68 @@ export function archiveProgress(
   const existing = loadHistory(storage);
   existing.push(entry);
   storage.setItem(buildHistoryKey(), JSON.stringify(existing));
-  storage.removeItem(buildProgressKey(entry.date));
+  storage.removeItem(buildProgressKey(entry.puzzleId));
+}
+
+export function getAchievedStackIndex(
+  storage: Pick<Storage, "length" | "key" | "getItem">,
+  date: string,
+): number {
+  let highestSolvedIndex = -1;
+
+  for (const progress of listDailyProgress(storage, date)) {
+    if (progress.status !== "solved") continue;
+    highestSolvedIndex = Math.max(highestSolvedIndex, progress.stackIndex);
+  }
+
+  return Math.max(highestSolvedIndex, 0);
+}
+
+export function getPlayableStackIndex(
+  storage: Pick<Storage, "length" | "key" | "getItem">,
+  date: string,
+): number {
+  const progressByIndex = new Map<number, PuzzleProgress["status"]>();
+
+  for (const progress of listDailyProgress(storage, date)) {
+    progressByIndex.set(progress.stackIndex, progress.status);
+  }
+
+  let playableStackIndex = 0;
+  while (progressByIndex.get(playableStackIndex) === "solved") {
+    playableStackIndex += 1;
+  }
+
+  return playableStackIndex;
+}
+
+function listDailyProgress(
+  storage: Pick<Storage, "length" | "key" | "getItem">,
+  date: string,
+): Array<PuzzleProgress & { stackIndex: number }> {
+  const entries: Array<PuzzleProgress & { stackIndex: number }> = [];
+
+  for (let index = 0; index < storage.length; index++) {
+    const key = storage.key(index);
+    if (!key?.startsWith(`${STORAGE_NAMESPACE}:progress:daily-${date}-`)) {
+      continue;
+    }
+
+    const raw = storage.getItem(key);
+    if (!raw) continue;
+
+    try {
+      const progress = parsePuzzleProgress(JSON.parse(raw));
+      if (!progress) continue;
+      const match = progress.puzzleId.match(/-(\d+)$/);
+      if (!match) continue;
+      entries.push({ ...progress, stackIndex: Number(match[1]) });
+    } catch {
+      continue;
+    }
+  }
+
+  return entries;
 }
 
 function loadHistory(storage: Pick<Storage, "getItem">): PuzzleHistoryEntry[] {

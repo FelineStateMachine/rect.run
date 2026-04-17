@@ -4,6 +4,8 @@ import {
   archiveProgress,
   buildHistoryKey,
   buildProgressKey,
+  getAchievedStackIndex,
+  getPlayableStackIndex,
   loadPuzzleProgress,
   savePuzzleProgress,
 } from "@/lib/storage/local_progress.ts";
@@ -40,7 +42,7 @@ class MemoryStorage implements Storage {
 function createProgress(): PuzzleProgress {
   return {
     date: "2026-04-16",
-    puzzleId: "daily-2026-04-16",
+    puzzleId: "daily-2026-04-16-0",
     startedAt: "2026-04-16T10:00:00.000Z",
     updatedAt: "2026-04-16T10:03:00.000Z",
     status: "in_progress",
@@ -61,8 +63,8 @@ function createProgress(): PuzzleProgress {
 
 Deno.test("buildProgressKey and buildHistoryKey use versioned storage keys", () => {
   assertEquals(
-    buildProgressKey("2026-04-16"),
-    "shikaku:v1:progress:2026-04-16",
+    buildProgressKey("daily-2026-04-16-0"),
+    "shikaku:v1:progress:daily-2026-04-16-0",
   );
   assertEquals(buildHistoryKey(), "shikaku:v1:history");
 });
@@ -73,14 +75,14 @@ Deno.test("savePuzzleProgress and loadPuzzleProgress roundtrip progress", () => 
 
   savePuzzleProgress(storage, progress);
 
-  assertEquals(loadPuzzleProgress(storage, progress.date), progress);
+  assertEquals(loadPuzzleProgress(storage, progress.puzzleId), progress);
 });
 
 Deno.test("loadPuzzleProgress ignores malformed json", () => {
   const storage = new MemoryStorage();
-  storage.setItem(buildProgressKey("2026-04-16"), "{not-json");
+  storage.setItem(buildProgressKey("daily-2026-04-16-0"), "{not-json");
 
-  assertEquals(loadPuzzleProgress(storage, "2026-04-16"), null);
+  assertEquals(loadPuzzleProgress(storage, "daily-2026-04-16-0"), null);
 });
 
 Deno.test("archiveProgress appends history entry and removes saved progress", () => {
@@ -95,7 +97,7 @@ Deno.test("archiveProgress appends history entry and removes saved progress", ()
     mistakes: progress.mistakes,
   });
 
-  assertEquals(loadPuzzleProgress(storage, progress.date), null);
+  assertEquals(loadPuzzleProgress(storage, progress.puzzleId), null);
   assertEquals(
     storage.getItem(buildHistoryKey()),
     JSON.stringify([
@@ -107,4 +109,66 @@ Deno.test("archiveProgress appends history entry and removes saved progress", ()
       },
     ]),
   );
+});
+
+Deno.test("getAchievedStackIndex returns the highest solved index for a day", () => {
+  const storage = new MemoryStorage();
+
+  savePuzzleProgress(storage, {
+    ...createProgress(),
+    puzzleId: "daily-2026-04-16-0",
+    status: "solved",
+  });
+  savePuzzleProgress(storage, {
+    ...createProgress(),
+    puzzleId: "daily-2026-04-16-1",
+    status: "solved",
+  });
+  savePuzzleProgress(storage, {
+    ...createProgress(),
+    puzzleId: "daily-2026-04-16-2",
+    status: "in_progress",
+  });
+
+  assertEquals(getAchievedStackIndex(storage, "2026-04-16"), 1);
+  assertEquals(getAchievedStackIndex(storage, "2026-04-17"), 0);
+});
+
+Deno.test("getPlayableStackIndex starts at zero and unlocks the next stack only after a solve", () => {
+  const storage = new MemoryStorage();
+
+  assertEquals(getPlayableStackIndex(storage, "2026-04-16"), 0);
+
+  savePuzzleProgress(storage, {
+    ...createProgress(),
+    puzzleId: "daily-2026-04-16-0",
+    status: "in_progress",
+  });
+  assertEquals(getPlayableStackIndex(storage, "2026-04-16"), 0);
+
+  savePuzzleProgress(storage, {
+    ...createProgress(),
+    puzzleId: "daily-2026-04-16-0",
+    status: "solved",
+  });
+  assertEquals(getPlayableStackIndex(storage, "2026-04-16"), 1);
+
+  savePuzzleProgress(storage, {
+    ...createProgress(),
+    puzzleId: "daily-2026-04-16-1",
+    status: "in_progress",
+  });
+  assertEquals(getPlayableStackIndex(storage, "2026-04-16"), 1);
+});
+
+Deno.test("getPlayableStackIndex ignores non-contiguous solved entries", () => {
+  const storage = new MemoryStorage();
+
+  savePuzzleProgress(storage, {
+    ...createProgress(),
+    puzzleId: "daily-2026-04-16-1",
+    status: "solved",
+  });
+
+  assertEquals(getPlayableStackIndex(storage, "2026-04-16"), 0);
 });

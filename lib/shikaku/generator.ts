@@ -48,13 +48,17 @@ export function createSeededRng(seed: string): () => number {
 
 export function createPuzzleFromDailySeed(
   date: string,
+  streakIndex = 0,
   options: Partial<GeneratorOptions> = {},
 ): ShikakuPuzzle {
-  const puzzle = generatePuzzleFromSeed(date, options);
+  const seed = `${date}:${streakIndex}`;
+  const puzzle = generatePuzzleFromSeed(seed, options);
   return {
     ...puzzle,
-    id: `daily-${date}`,
+    id: `daily-${date}-${streakIndex}`,
     date,
+    streakIndex,
+    seed,
   };
 }
 
@@ -101,6 +105,7 @@ export function generatePuzzleFromSeed(
     return {
       id: `seed-${seed}`,
       date: seed,
+      streakIndex: 0,
       width: config.width,
       height: config.height,
       givens,

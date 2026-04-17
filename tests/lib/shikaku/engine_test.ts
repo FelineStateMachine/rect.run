@@ -10,8 +10,9 @@ import {
 import type { PlacedRectangle, ShikakuPuzzle } from "@/lib/shikaku/types.ts";
 
 const samplePuzzle: ShikakuPuzzle = {
-  id: "daily-2026-04-16",
+  id: "daily-2026-04-16-0",
   date: "2026-04-16",
+  streakIndex: 0,
   width: 4,
   height: 4,
   difficulty: "easy",
@@ -64,6 +65,7 @@ Deno.test("validateRectanglePlacement accepts rectangles whose clue is not at th
   const offCenterPuzzle: ShikakuPuzzle = {
     id: "off-center",
     date: "2026-04-16",
+    streakIndex: 0,
     width: 3,
     height: 2,
     difficulty: "easy",
@@ -142,6 +144,7 @@ Deno.test("isPuzzleSolved accepts any valid full tiling, not only the planned on
   const multiSolutionPuzzle: ShikakuPuzzle = {
     id: "multi-solution",
     date: "2026-04-16",
+    streakIndex: 0,
     width: 2,
     height: 2,
     difficulty: "easy",

@@ -1,14 +1,9 @@
-import { listAvailablePuzzleDates } from "@/lib/shikaku/catalog.ts";
-import { buildDailyPath } from "@/lib/site/paths.ts";
+import { dateToSlug } from "@/lib/date/daily.ts";
 import { define } from "../../utils.ts";
+import DailyStackRedirect from "../../islands/DailyStackRedirect.tsx";
 
-export const handler = define.handlers((ctx) => {
-  const dates = listAvailablePuzzleDates();
-  const latest = dates.at(-1);
+export default define.page(function DailyEntry() {
+  const fallbackDate = dateToSlug(new Date());
 
-  if (!latest) {
-    return new Response("No puzzles available", { status: 404 });
-  }
-
-  return ctx.redirect(buildDailyPath(latest));
+  return <DailyStackRedirect fallbackDate={fallbackDate} />;
 });
