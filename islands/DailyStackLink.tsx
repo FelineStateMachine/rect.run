@@ -1,21 +1,25 @@
 import { useEffect, useState } from "preact/hooks";
 
 import { dateToSlug } from "@/lib/date/daily.ts";
-import { resolvePlayableDailyPath } from "@/lib/site/paths.ts";
+import { buildDailyPath } from "@/lib/site/paths.ts";
 
 interface DailyStackLinkProps {
   fallbackDate: string;
 }
 
 export default function DailyStackLink({ fallbackDate }: DailyStackLinkProps) {
-  const [href, setHref] = useState(
-    resolvePlayableDailyPath(localStorageFallback(), fallbackDate),
-  );
+  const [href, setHref] = useState(buildDailyPath(fallbackDate));
 
   useEffect(() => {
     const localDate = dateToSlug(new Date());
-    setHref(resolvePlayableDailyPath(globalThis.localStorage, localDate));
-  }, []);
+    const nextHref = buildDailyPath(localDate);
+    console.debug("[rect.run] home-play-link", {
+      fallbackDate,
+      localDate,
+      nextHref,
+    });
+    setHref(nextHref);
+  }, [fallbackDate]);
 
   return (
     <a class="shikaku-home__action shikaku-home__action--gold" href={href}>
@@ -23,12 +27,4 @@ export default function DailyStackLink({ fallbackDate }: DailyStackLinkProps) {
       <strong>Play</strong>
     </a>
   );
-}
-
-function localStorageFallback(): Pick<Storage, "length" | "key" | "getItem"> {
-  return {
-    length: 0,
-    key: () => null,
-    getItem: () => null,
-  };
 }

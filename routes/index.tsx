@@ -1,6 +1,7 @@
 import { listAvailablePuzzleDates } from "@/lib/shikaku/catalog.ts";
 import { define } from "../utils.ts";
 import DailyStackLink from "../islands/DailyStackLink.tsx";
+import HomeDateStackEyebrow from "../islands/HomeDateStackEyebrow.tsx";
 import OfflineBadge from "../islands/OfflineBadge.tsx";
 import ShareDailyStackButton from "../islands/ShareDailyStreakButton.tsx";
 
@@ -18,7 +19,7 @@ export default define.page(function Home() {
 
         <section class="shikaku-home__hero">
           <div class="shikaku-home__hero-copy">
-            <div class="shikaku-home__eyebrow">SEED {latest}</div>
+            <HomeDateStackEyebrow fallbackDate={latest} />
             <h1 class="shikaku-home__title">RECT.RUN</h1>
             <div class="shikaku-home__speech-stack" aria-label="Puzzle pitch">
               <p class="shikaku-home__speech">Daily grid.</p>

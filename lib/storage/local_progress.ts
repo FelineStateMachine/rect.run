@@ -80,6 +80,44 @@ export function getPlayableStackIndex(
   return playableStackIndex;
 }
 
+export function getMostRecentStackIndex(
+  storage: Pick<Storage, "length" | "key" | "getItem">,
+  date: string,
+): number {
+  let latest = { stackIndex: 0, updatedAt: "" };
+
+  for (const progress of listDailyProgress(storage, date)) {
+    if (progress.updatedAt >= latest.updatedAt) {
+      latest = {
+        stackIndex: progress.stackIndex,
+        updatedAt: progress.updatedAt,
+      };
+    }
+  }
+
+  return latest.stackIndex;
+}
+
+export function getVisibleStackRange(
+  storage: Pick<Storage, "length" | "key" | "getItem">,
+  date: string,
+): { min: number; max: number } {
+  let max = 0;
+
+  for (const progress of listDailyProgress(storage, date)) {
+    max = Math.max(max, progress.stackIndex);
+  }
+
+  return { min: 0, max };
+}
+
+export function getSelectedStackIndex(
+  storage: Pick<Storage, "length" | "key" | "getItem">,
+  date: string,
+): number {
+  return getVisibleStackRange(storage, date).max;
+}
+
 function listDailyProgress(
   storage: Pick<Storage, "length" | "key" | "getItem">,
   date: string,

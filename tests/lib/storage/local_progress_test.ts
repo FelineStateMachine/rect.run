@@ -5,7 +5,10 @@ import {
   buildHistoryKey,
   buildProgressKey,
   getAchievedStackIndex,
+  getMostRecentStackIndex,
   getPlayableStackIndex,
+  getSelectedStackIndex,
+  getVisibleStackRange,
   loadPuzzleProgress,
   savePuzzleProgress,
 } from "@/lib/storage/local_progress.ts";
@@ -58,6 +61,21 @@ function createProgress(): PuzzleProgress {
     notes: {},
     lastViewedAt: "2026-04-16T10:03:00.000Z",
     clientVersion: 1,
+  };
+}
+
+function createProgressFor(
+  puzzleId: string,
+  status: PuzzleProgress["status"],
+  updatedAt: string,
+): PuzzleProgress {
+  return {
+    ...createProgress(),
+    date: puzzleId.split("-").slice(1, 4).join("-"),
+    puzzleId,
+    status,
+    updatedAt,
+    lastViewedAt: updatedAt,
   };
 }
 
@@ -171,4 +189,99 @@ Deno.test("getPlayableStackIndex ignores non-contiguous solved entries", () => {
   });
 
   assertEquals(getPlayableStackIndex(storage, "2026-04-16"), 0);
+});
+
+Deno.test("getMostRecentStackIndex returns the last touched stack for a date", () => {
+  const storage = new MemoryStorage();
+
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-0",
+      "solved",
+      "2026-04-16T10:03:00.000Z",
+    ),
+  );
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-2",
+      "in_progress",
+      "2026-04-16T10:07:00.000Z",
+    ),
+  );
+
+  assertEquals(getMostRecentStackIndex(storage, "2026-04-16"), 2);
+  assertEquals(getMostRecentStackIndex(storage, "2026-04-17"), 0);
+});
+
+Deno.test("getVisibleStackRange exposes the highest touched stack for date navigation", () => {
+  const storage = new MemoryStorage();
+
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-0",
+      "solved",
+      "2026-04-16T10:03:00.000Z",
+    ),
+  );
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-3",
+      "in_progress",
+      "2026-04-16T10:07:00.000Z",
+    ),
+  );
+
+  assertEquals(getVisibleStackRange(storage, "2026-04-16"), { min: 0, max: 3 });
+  assertEquals(getVisibleStackRange(storage, "2026-04-17"), { min: 0, max: 0 });
+});
+
+Deno.test("getSelectedStackIndex returns the top stack for a date", () => {
+  const storage = new MemoryStorage();
+
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-0",
+      "solved",
+      "2026-04-16T10:03:00.000Z",
+    ),
+  );
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-2",
+      "in_progress",
+      "2026-04-16T10:07:00.000Z",
+    ),
+  );
+
+  assertEquals(getSelectedStackIndex(storage, "2026-04-16"), 2);
+  assertEquals(getSelectedStackIndex(storage, "2026-04-17"), 0);
+});
+
+Deno.test("getSelectedStackIndex prefers the highest visible stack over a lower recent one", () => {
+  const storage = new MemoryStorage();
+
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-1",
+      "in_progress",
+      "2026-04-16T10:09:00.000Z",
+    ),
+  );
+  savePuzzleProgress(
+    storage,
+    createProgressFor(
+      "daily-2026-04-16-2",
+      "solved",
+      "2026-04-16T10:05:00.000Z",
+    ),
+  );
+
+  assertEquals(getSelectedStackIndex(storage, "2026-04-16"), 2);
 });

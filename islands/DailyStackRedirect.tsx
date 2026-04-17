@@ -1,7 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 
 import { dateToSlug } from "@/lib/date/daily.ts";
-import { resolvePlayableDailyPath } from "@/lib/site/paths.ts";
+import { buildDailyPath } from "@/lib/site/paths.ts";
 
 interface DailyStackRedirectProps {
   fallbackDate: string;
@@ -10,16 +10,10 @@ interface DailyStackRedirectProps {
 export default function DailyStackRedirect(
   { fallbackDate }: DailyStackRedirectProps,
 ) {
-  const [href, setHref] = useState(
-    resolvePlayableDailyPath(localStorageFallback(), fallbackDate),
-  );
+  const [href, setHref] = useState(buildDailyPath(fallbackDate));
 
   useEffect(() => {
-    const localDate = dateToSlug(new Date());
-    const nextHref = resolvePlayableDailyPath(
-      globalThis.localStorage,
-      localDate,
-    );
+    const nextHref = buildDailyPath(dateToSlug(new Date()));
     setHref(nextHref);
     globalThis.location.replace(nextHref);
   }, []);
@@ -46,12 +40,4 @@ export default function DailyStackRedirect(
       </div>
     </main>
   );
-}
-
-function localStorageFallback(): Pick<Storage, "length" | "key" | "getItem"> {
-  return {
-    length: 0,
-    key: () => null,
-    getItem: () => null,
-  };
 }

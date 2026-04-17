@@ -1,8 +1,7 @@
 import { useSignal } from "@preact/signals";
 import { useEffect, useMemo, useRef } from "preact/hooks";
 
-import { dateToSlug } from "@/lib/date/daily.ts";
-
+import { shouldReloadSavedProgress } from "@/lib/shikaku/game_session.ts";
 import {
   createRectangleFromCorners,
   getRectangleCells,
@@ -17,11 +16,9 @@ import {
   getStatusTone,
 } from "@/lib/shikaku/play_state.ts";
 import {
-  getPlayableStackIndex,
   loadPuzzleProgress,
   savePuzzleProgress,
 } from "@/lib/storage/local_progress.ts";
-import { buildDailyPath } from "@/lib/site/paths.ts";
 import type {
   GridPoint,
   PlacedRectangle,
@@ -32,6 +29,12 @@ import type {
 interface ShikakuGameProps {
   puzzle: ShikakuPuzzle;
   readOnly?: boolean;
+  resetEnabled?: boolean;
+  lockedMessage?: string;
+  initialMessage?: string;
+  solvedMessage?: string;
+  onReset?: () => void;
+  onSolved?: () => void;
 }
 
 const COLORS = [
@@ -45,48 +48,48 @@ const COLORS = [
   "#a7f3d0",
 ];
 
-export default function ShikakuGame(
-  { puzzle, readOnly = false }: ShikakuGameProps,
-) {
+export default function ShikakuGame(props: ShikakuGameProps) {
+  const {
+    puzzle,
+    readOnly = false,
+    resetEnabled,
+    lockedMessage = "View only.",
+    initialMessage,
+    solvedMessage = "Solved!",
+    onReset,
+    onSolved,
+  } = props;
+  const resolvedInitialMessage = initialMessage ??
+    (readOnly
+      ? lockedMessage
+      : "Drag to size a rectangle. Release when it encloses one clue.");
+  const resolvedResetEnabled = resetEnabled ?? !readOnly;
+
   const boardRef = useRef<HTMLDivElement>(null);
+  const previousPuzzleIdRef = useRef("");
   const rectangles = useSignal<PlacedRectangle[]>([]);
   const activeClueId = useSignal<number | null>(null);
   const dragAnchor = useSignal<GridPoint | null>(null);
   const dragCurrent = useSignal<GridPoint | null>(null);
   const dragPointerId = useSignal<number | null>(null);
   const status = useSignal<"in_progress" | "solved">("in_progress");
-  const message = useSignal(
-    "Drag to size a rectangle. Release when it encloses one clue.",
-  );
+  const message = useSignal(resolvedInitialMessage);
   const hydrated = useSignal(false);
-  const effectiveReadOnly = useSignal(readOnly);
-  const playableStackIndex = useSignal(puzzle.streakIndex);
-  const localToday = useSignal(puzzle.date);
 
-  useEffect(() => {
-    const saved = loadPuzzleProgress(globalThis.localStorage, puzzle.id);
-    if (saved) {
-      rectangles.value = selectionsToRectangles(saved, puzzle);
-      status.value = saved.status === "solved" ? "solved" : "in_progress";
-      message.value = saved.status === "solved"
-        ? "Reset or play another."
-        : "Resumed from local storage.";
-    }
-    hydrated.value = true;
-  }, [puzzle.date, puzzle.id]);
-
-  useEffect(() => {
-    if (!hydrated.value) return;
+  function persistProgress(
+    nextRectangles: PlacedRectangle[],
+    nextStatus: "in_progress" | "solved",
+  ) {
     const now = new Date().toISOString();
     const progress: PuzzleProgress = {
       date: puzzle.date,
       puzzleId: puzzle.id,
       startedAt: now,
       updatedAt: now,
-      status: status.value === "solved" ? "solved" : "in_progress",
+      status: nextStatus,
       elapsedMs: 0,
       mistakes: 0,
-      selections: rectangles.value.map((rectangle) => ({
+      selections: nextRectangles.map((rectangle) => ({
         clueId: rectangle.clueId,
         cells: getRectangleCells(rectangle),
         value: rectangle.value,
@@ -96,44 +99,27 @@ export default function ShikakuGame(
       clientVersion: 1,
     };
     savePuzzleProgress(globalThis.localStorage, progress);
-  }, [puzzle.date, rectangles.value, status.value, hydrated.value]);
+  }
 
   useEffect(() => {
-    if (!hydrated.value) return;
-    localToday.value = dateToSlug(new Date());
-    playableStackIndex.value = getPlayableStackIndex(
-      globalThis.localStorage,
-      puzzle.date,
-    );
-
-    effectiveReadOnly.value = readOnly || puzzle.date !== localToday.value ||
-      puzzle.streakIndex !== playableStackIndex.value;
-
-    if (status.value === "solved") {
-      message.value = playableStackIndex.value === puzzle.streakIndex + 1
-        ? "Solved. Next stack unlocked."
-        : "Reset or play another.";
+    if (!shouldReloadSavedProgress(previousPuzzleIdRef.current, puzzle.id)) {
       return;
     }
 
-    if (!effectiveReadOnly.value) return;
-    if (puzzle.date < localToday.value) {
-      message.value = "Past day. View only.";
-    } else if (puzzle.date > localToday.value) {
-      message.value = "Locked until this day.";
-    } else if (puzzle.streakIndex < playableStackIndex.value) {
-      message.value = "Earlier stack. View only.";
-    } else {
-      message.value = `Locked. Finish stack ${playableStackIndex.value} first.`;
-    }
-  }, [
-    puzzle.date,
-    puzzle.streakIndex,
-    status.value,
-    rectangles.value,
-    hydrated.value,
-    readOnly,
-  ]);
+    previousPuzzleIdRef.current = puzzle.id;
+    const saved = loadPuzzleProgress(globalThis.localStorage, puzzle.id);
+    rectangles.value = saved ? selectionsToRectangles(saved, puzzle) : [];
+    status.value = saved?.status === "solved" ? "solved" : "in_progress";
+    message.value = saved?.status === "solved"
+      ? solvedMessage
+      : resolvedInitialMessage;
+    hydrated.value = true;
+  }, [puzzle.id, resolvedInitialMessage, solvedMessage]);
+
+  useEffect(() => {
+    if (!hydrated.value || readOnly) return;
+    persistProgress(rectangles.value, status.value);
+  }, [puzzle.id, rectangles.value, status.value, hydrated.value, readOnly]);
 
   const clueEntries = useMemo(() => {
     return puzzle.givens.map((given, index) => {
@@ -247,25 +233,18 @@ export default function ShikakuGame(
 
     if (isPuzzleSolved(puzzle, nextRectangles)) {
       status.value = "solved";
-      message.value = "Solved!";
+      persistProgress(nextRectangles, "solved");
+      message.value = solvedMessage;
+      onSolved?.();
       return;
     }
 
     message.value = "Rectangle placed.";
   }
 
-  function getLockedMessage(): string {
-    if (puzzle.date < localToday.value) return "Past day. View only.";
-    if (puzzle.date > localToday.value) return "Locked until this day.";
-    if (puzzle.streakIndex < playableStackIndex.value) {
-      return "Earlier stack. View only.";
-    }
-    return `Locked. Finish stack ${playableStackIndex.value} first.`;
-  }
-
   function handleCellPointerDown(point: GridPoint, pointerId: number) {
-    if (effectiveReadOnly.value) {
-      message.value = getLockedMessage();
+    if (readOnly) {
+      message.value = lockedMessage;
       clearDrag();
       return;
     }
@@ -291,7 +270,7 @@ export default function ShikakuGame(
   }
 
   function handleBoardPointerDown(event: PointerEvent) {
-    if (effectiveReadOnly.value) return;
+    if (readOnly) return;
     event.preventDefault();
     const point = getBoardPointFromPointer(event);
     if (!point) return;
@@ -301,14 +280,14 @@ export default function ShikakuGame(
   }
 
   function handleBoardPointerMove(event: PointerEvent) {
-    if (effectiveReadOnly.value) return;
+    if (readOnly) return;
     const point = getBoardPointFromPointer(event);
     if (!point) return;
     updateDrag(point, event.pointerId);
   }
 
   function handleBoardPointerUp(event: PointerEvent) {
-    if (effectiveReadOnly.value) return;
+    if (readOnly) return;
     event.preventDefault();
     const point = getBoardPointFromPointer(event);
     if (!point) {
@@ -321,14 +300,18 @@ export default function ShikakuGame(
   }
 
   function handleBoardPointerCancel(event: PointerEvent) {
-    if (effectiveReadOnly.value) return;
+    if (readOnly) return;
     clearDrag();
     boardRef.current?.releasePointerCapture?.(event.pointerId);
   }
 
   function clearBoard() {
-    if (effectiveReadOnly.value) {
-      message.value = getLockedMessage();
+    if (readOnly) {
+      if (!resolvedResetEnabled) {
+        message.value = lockedMessage;
+        return;
+      }
+      onReset?.();
       return;
     }
 
@@ -336,13 +319,8 @@ export default function ShikakuGame(
     clearDrag();
     status.value = "in_progress";
     message.value = "Board cleared.";
+    onReset?.();
   }
-
-  const nextStackHref = status.value === "solved" &&
-      puzzle.date === localToday.value &&
-      playableStackIndex.value === puzzle.streakIndex + 1
-    ? buildDailyPath(puzzle.date, playableStackIndex.value)
-    : null;
 
   return (
     <section class="shikaku-game-shell">
@@ -358,22 +336,12 @@ export default function ShikakuGame(
           <span>{message}</span>
         </div>
         <div class="shikaku-game-actions">
-          {nextStackHref
-            ? (
-              <a
-                class="shikaku-game-clear shikaku-game-clear--link"
-                href={nextStackHref}
-              >
-                Next
-              </a>
-            )
-            : null}
           <button
             class="shikaku-game-clear"
             type="button"
             onClick={clearBoard}
-            disabled={effectiveReadOnly.value}
-            aria-disabled={effectiveReadOnly.value}
+            disabled={readOnly && !resolvedResetEnabled}
+            aria-disabled={readOnly && !resolvedResetEnabled}
           >
             Reset
           </button>
@@ -445,8 +413,8 @@ export default function ShikakuGame(
             }`}
             style={{ ["--token-color" as string]: entry.color }}
             onClick={() => {
-              if (effectiveReadOnly.value) {
-                message.value = getLockedMessage();
+              if (readOnly) {
+                message.value = lockedMessage;
                 return;
               }
               activeClueId.value = entry.given.id;

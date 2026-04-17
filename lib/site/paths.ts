@@ -1,8 +1,7 @@
 import { getPlayableStackIndex } from "@/lib/storage/local_progress.ts";
 
-export function buildDailyPath(date?: string, streakIndex?: number): string {
+export function buildDailyPath(date?: string, _stackIndex?: number): string {
   if (!date) return "/d";
-  if (typeof streakIndex === "number") return `/d/${date}/${streakIndex}`;
   return `/d/${date}`;
 }
 
@@ -15,14 +14,15 @@ export function buildShareDailyStackText(
   date: string,
   stackIndex: number,
 ): string {
-  return `Daily stack · ${origin}${buildDailyPath(date, stackIndex)}`;
+  return `Stack ${stackIndex + 1}\n${origin}${buildDailyPath(date)}`;
 }
 
 export function resolvePlayableDailyPath(
   storage: Pick<Storage, "length" | "key" | "getItem">,
   date: string,
 ): string {
-  return buildDailyPath(date, getPlayableStackIndex(storage, date));
+  getPlayableStackIndex(storage, date);
+  return buildDailyPath(date);
 }
 
 export function isDailyPathname(pathname: string): boolean {
