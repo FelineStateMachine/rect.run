@@ -1,0 +1,20 @@
+{
+  "id": "daily-2026-04-16",
+  "date": "2026-04-16",
+  "width": 4,
+  "height": 4,
+  "difficulty": "easy",
+  "seed": "sample-seed",
+  "givens": [
+    { "row": 0, "col": 0, "value": 4 },
+    { "row": 0, "col": 2, "value": 4 },
+    { "row": 2, "col": 0, "value": 4 },
+    { "row": 2, "col": 2, "value": 4 }
+  ],
+  "solution": [
+    { "row": 0, "col": 0, "width": 2, "height": 2, "value": 4 },
+    { "row": 0, "col": 2, "width": 2, "height": 2, "value": 4 },
+    { "row": 2, "col": 0, "width": 2, "height": 2, "value": 4 },
+    { "row": 2, "col": 2, "width": 2, "height": 2, "value": 4 }
+  ]
+}

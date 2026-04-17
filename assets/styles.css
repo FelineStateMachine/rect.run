@@ -1,0 +1,788 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+button {
+  color: inherit;
+}
+button, [role="button"] {
+  cursor: pointer;
+}
+code {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 1em;
+}
+img,
+svg {
+  display: block;
+}
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  background: #f7f4ea;
+  overscroll-behavior-x: none;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100dvh;
+  background: #f7f4ea;
+  overscroll-behavior-x: none;
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.shikaku-home {
+  min-height: 100dvh;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0f180d 0%, #122411 44%, #0b130b 100%);
+  color: #f7f0d8;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+.shikaku-home__frame {
+  width: min(100%, 76rem);
+  height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.8rem;
+  padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem
+    max(0.75rem, env(safe-area-inset-bottom));
+}
+
+.shikaku-home__masthead,
+.shikaku-home__hero {
+  border: 2px solid #0b1209;
+  background: #f4ebcf;
+  color: #11160d;
+  box-shadow: 6px 6px 0 #0b1209;
+}
+
+.shikaku-home__masthead {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 0.75rem 0.9rem;
+}
+
+.shikaku-home__brand {
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shikaku-home__hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+  min-height: 0;
+  height: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(180deg, #efe5c2 0%, #dfe6b4 100%);
+}
+
+.shikaku-home__hero-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.shikaku-home__eyebrow,
+.shikaku-home__feature-index,
+.shikaku-home__action-kicker {
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shikaku-home__eyebrow {
+  display: inline-flex;
+  justify-self: start;
+  padding: 0.45rem 0.6rem;
+  border: 2px solid #0b1209;
+  background: #d4deb0;
+  box-shadow: 3px 3px 0 #0b1209;
+}
+
+.shikaku-home__title {
+  max-width: 8ch;
+  font-size: clamp(2.6rem, 14vw, 6.6rem);
+  line-height: 0.85;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #f8f3de;
+  text-shadow:
+    2px 0 0 #0b1209,
+    -2px 0 0 #0b1209,
+    0 2px 0 #0b1209,
+    0 -2px 0 #0b1209,
+    6px 6px 0 #3e5f33;
+}
+
+.shikaku-home__speech-stack {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.shikaku-home__speech {
+  width: fit-content;
+  max-width: min(100%, 18rem);
+  padding: 0.65rem 0.8rem;
+  border: 2px solid #0b1209;
+  background: #faf5df;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  box-shadow: 4px 4px 0 #0b1209;
+}
+
+.shikaku-home__speech--accent {
+  background: #bbd083;
+}
+
+.shikaku-home__actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-top: 0.2rem;
+}
+
+.shikaku-home__action {
+  display: grid;
+  gap: 0.18rem;
+  align-content: center;
+  min-height: 4rem;
+  padding: 0.8rem 0.95rem;
+  border: 2px solid #0b1209;
+  text-decoration: none;
+  color: #11160d;
+  box-shadow: 4px 4px 0 #0b1209;
+}
+
+.shikaku-home__action strong,
+.shikaku-home__feature-card strong {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.shikaku-home__action--gold {
+  background: #f2cb55;
+}
+
+.shikaku-home__action--ghost {
+  background: #e2ecc0;
+}
+
+.shikaku-home__hero-art {
+  position: relative;
+  min-height: 16rem;
+  border: 2px solid #0b1209;
+  background: linear-gradient(
+    180deg,
+    #7892d5 0 26%,
+    #5e7ac4 26% 42%,
+    #23301f 42% 100%
+  );
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.shikaku-home__sky,
+.shikaku-home__lawn-grid,
+.shikaku-home__keep,
+.shikaku-home__moon {
+  position: absolute;
+}
+
+.shikaku-home__sky {
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 18% 20%,
+      rgba(255, 245, 182, 0.45) 0 7%,
+      transparent 8%
+    ),
+    radial-gradient(
+    circle at 76% 14%,
+    rgba(255, 255, 255, 0.35) 0 4%,
+    transparent 5%
+  ),
+    radial-gradient(
+    circle at 68% 26%,
+    rgba(255, 255, 255, 0.2) 0 3%,
+    transparent 4%
+  ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 45%);
+}
+
+.shikaku-home__moon {
+  top: 1.2rem;
+  right: 1.3rem;
+  width: 3.3rem;
+  aspect-ratio: 1;
+  background: #f6efc9;
+  box-shadow: 0 0 0 2px #0b1209, 4px 4px 0 rgba(11, 18, 9, 0.9);
+}
+
+.shikaku-home__keep {
+  left: 50%;
+  bottom: 3.25rem;
+  width: min(86%, 20rem);
+  height: 9rem;
+  transform: translateX(-50%);
+}
+
+.shikaku-home__keep-tower,
+.shikaku-home__keep-wall,
+.shikaku-home__keep-gate,
+.shikaku-home__banner {
+  position: absolute;
+  border: 2px solid #0b1209;
+}
+
+.shikaku-home__keep-tower,
+.shikaku-home__keep-wall {
+  background: #7a7a81;
+  box-shadow: inset 0 -12px 0 rgba(0, 0, 0, 0.16);
+}
+
+.shikaku-home__keep-tower::before,
+.shikaku-home__keep-wall::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0 18%,
+    rgba(255, 255, 255, 0.18) 18% 26%,
+    transparent 26% 100%
+  );
+}
+
+.shikaku-home__keep-tower--left {
+  left: 0;
+  bottom: 0;
+  width: 3.25rem;
+  height: 6rem;
+}
+
+.shikaku-home__keep-tower--center {
+  left: 50%;
+  bottom: 0;
+  width: 4.2rem;
+  height: 8rem;
+  transform: translateX(-50%);
+}
+
+.shikaku-home__keep-tower--right {
+  right: 0;
+  bottom: 0;
+  width: 3.25rem;
+  height: 6.5rem;
+}
+
+.shikaku-home__keep-wall {
+  left: 2.9rem;
+  right: 2.9rem;
+  bottom: 0;
+  height: 4.25rem;
+}
+
+.shikaku-home__keep-gate {
+  left: 50%;
+  bottom: 0;
+  width: 3rem;
+  height: 2.7rem;
+  transform: translateX(-50%);
+  background: #171d14;
+}
+
+.shikaku-home__banner {
+  top: 1.4rem;
+  width: 1.6rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  background: #f2cb55;
+  color: #11160d;
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.shikaku-home__banner--left {
+  left: 3.5rem;
+}
+
+.shikaku-home__banner--right {
+  right: 3.5rem;
+}
+
+.shikaku-home__lawn-grid {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4.4rem;
+  background:
+    repeating-linear-gradient(90deg, #426231 0 0.9rem, #4e7138 0.9rem 1.8rem),
+    repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.08) 0 2px,
+    transparent 2px 1.15rem
+  );
+  border-top: 2px solid #0b1209;
+}
+
+.shikaku-home__feature-strip {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #1a2515;
+  color: #f7f0d8;
+}
+
+.shikaku-home__feature-card {
+  display: grid;
+  gap: 0.35rem;
+  place-items: start;
+  padding: 0.9rem;
+  border: 2px solid #cad8a0;
+  background: #24341d;
+  box-shadow: 4px 4px 0 #0b1209;
+}
+
+@media (min-width: 760px) {
+  .shikaku-home__hero {
+    grid-template-columns: minmax(0, 1.02fr) minmax(18rem, 0.98fr);
+    align-items: stretch;
+    padding: 1.35rem;
+  }
+
+  .shikaku-home__actions,
+  .shikaku-home__feature-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shikaku-home__feature-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.shikaku-play-shell {
+  height: 100dvh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0f180d 0%, #122411 44%, #0b130b 100%);
+  color: #f7f0d8;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+.shikaku-play-frame {
+  height: 100%;
+  width: min(100%, 32rem);
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.6rem;
+  padding: max(0.75rem, env(safe-area-inset-top))
+    max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom))
+    max(0.75rem, env(safe-area-inset-left));
+}
+
+.shikaku-play-header,
+.shikaku-game-status,
+.shikaku-game-board-wrap,
+.shikaku-clue-token {
+  border: 2px solid #0b1209;
+  box-shadow: 4px 4px 0 #0b1209;
+}
+
+.shikaku-play-header {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem;
+  background: #f4ebcf;
+  color: #11160d;
+}
+
+.shikaku-play-header__row {
+  display: grid;
+  gap: 0.4rem;
+  justify-items: center;
+}
+
+.shikaku-play-day-nav {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2.4rem 1fr 2.4rem;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: center;
+}
+
+.shikaku-play-day-nav--with-home {
+  grid-template-columns: minmax(3.75rem, auto) 2.4rem 1fr 2.4rem;
+}
+
+.shikaku-play-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.35rem;
+  padding: 0.35rem 0.6rem;
+  border: 2px solid #0b1209;
+  background: #d4deb0;
+  color: #11160d;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow: 3px 3px 0 #0b1209;
+}
+
+.shikaku-play-nav--home-text {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+  justify-content: flex-start;
+  padding-inline: 0.2rem 0.35rem;
+}
+
+.shikaku-play-nav--icon {
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.shikaku-play-kicker {
+  font-size: 0.65rem;
+  color: #415338;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shikaku-play-title {
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  line-height: 0.95;
+  color: #f8f3de;
+  text-shadow:
+    1px 0 0 #0b1209,
+    -1px 0 0 #0b1209,
+    0 1px 0 #0b1209,
+    0 -1px 0 #0b1209,
+    3px 3px 0 #3e5f33;
+}
+
+.shikaku-play-hint {
+  font-size: 0.76rem;
+  color: #415338;
+  text-transform: uppercase;
+}
+
+.shikaku-game-shell {
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+
+.shikaku-game-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding: 0.55rem 0.65rem;
+  background: #efe5c2;
+  color: #11160d;
+}
+
+.shikaku-game-status--solved {
+  background: #d9ebc5;
+}
+
+.shikaku-game-status__meta {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.shikaku-game-status__meta strong {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.shikaku-game-status__meta span {
+  color: #415338;
+  font-size: 0.73rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.shikaku-game-clear {
+  border: 2px solid #0b1209;
+  background: #d4deb0;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  box-shadow: 3px 3px 0 #0b1209;
+}
+
+.shikaku-game-board-wrap {
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: 0.25rem;
+  background: #f4ebcf;
+  overflow: hidden;
+}
+
+.shikaku-board--fixed {
+  width: min(100%, calc(100dvh - 21rem));
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  border: 2px solid #0b1209;
+  background: #fff8e4;
+}
+
+.shikaku-board__cell {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #0b1209;
+  position: relative;
+  font-size: clamp(0.72rem, 2.7vw, 0.96rem);
+  font-weight: 900;
+  color: #11160d;
+}
+
+.shikaku-clue-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.3rem;
+}
+
+.shikaku-clue-token {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22rem;
+  min-height: 2.15rem;
+  padding: 0.2rem 0.1rem;
+  background: #efe5c2;
+  color: #11160d;
+}
+
+.shikaku-clue-token--dim {
+  color: #6f7763;
+}
+
+.shikaku-clue-token__symbol {
+  color: currentColor;
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.shikaku-clue-token__value {
+  font-weight: 900;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.shikaku-clue-token.is-placed {
+  background: color-mix(in srgb, var(--token-color) 34%, #efe5c2);
+}
+
+.shikaku-clue-token.is-active {
+  outline: 2px solid #f2cb55;
+  outline-offset: -2px;
+}
+
+@media (max-width: 420px) {
+  .shikaku-play-frame {
+    padding-inline: 0.55rem;
+  }
+
+  .shikaku-board--fixed {
+    width: min(100%, calc(100dvh - 20.4rem));
+  }
+
+  .shikaku-clue-strip {
+    gap: 0.24rem;
+  }
+
+  .shikaku-clue-token {
+    min-height: 2rem;
+    padding: 0.15rem 0.05rem;
+  }
+}
+
+.shikaku-app-shell {
+  min-height: 100dvh;
+  padding: max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1.5rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+.shikaku-board {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior: none;
+}
+
+.shikaku-board button {
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.my-6 {
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+}
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+.my-4 {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.py-8 {
+  padding-bottom: 2rem;
+  padding-top: 2rem;
+}
+.bg-\[\#86efac\] {
+  background-color: #86efac;
+}
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+.py-6 {
+  padding-bottom: 1.5rem;
+  padding-top: 1.5rem;
+}
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.py-1 {
+  padding-bottom: 0.25rem;
+  padding-top: 0.25rem;
+}
+.border-gray-500 {
+  border-color: #6b7280;
+}
+.bg-white {
+  background-color: #fff;
+}
+.flex {
+  display: flex;
+}
+.gap-8 {
+  grid-gap: 2rem;
+  gap: 2rem;
+}
+.font-bold {
+  font-weight: 700;
+}
+.max-w-screen-md {
+  max-width: 768px;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.border-2 {
+  border-width: 2px;
+}
+.rounded-sm {
+  border-radius: 0.25rem;
+}
+.hover\:bg-gray-200:hover {
+  background-color: #e5e7eb;
+}
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.fresh-gradient {
+  background-color: rgb(134, 239, 172);
+  background-image: linear-gradient(
+    to right bottom,
+    rgb(219, 234, 254),
+    rgb(187, 247, 208),
+    rgb(254, 249, 195)
+  );
+}
