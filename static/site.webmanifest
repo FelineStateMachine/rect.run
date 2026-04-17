@@ -1,7 +1,7 @@
 {
   "name": "rect.run",
   "short_name": "rect.run",
-  "description": "Daily mobile-first Shikaku puzzles with touch-native rectangle play.",
+  "description": "Daily Shikaku puzzles",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
