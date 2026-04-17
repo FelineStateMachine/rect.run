@@ -33,11 +33,11 @@ export default define.page<typeof handler>(({ data }) => {
           <div class="shikaku-play-header__row">
             <div class="shikaku-play-day-nav shikaku-play-day-nav--with-home">
               <a
-                class="shikaku-play-nav shikaku-play-nav--home-text"
+                class="shikaku-play-nav shikaku-play-nav--icon"
                 href="/"
                 aria-label="Back home"
               >
-                Home
+                ⌂
               </a>
               <a
                 class="shikaku-play-nav shikaku-play-nav--icon"

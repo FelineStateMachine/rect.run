@@ -101,11 +101,23 @@ export function isPuzzleSolved(
   puzzle: ShikakuPuzzle,
   placed: PlacedRectangle[],
 ): boolean {
-  if (!puzzle.solution) return false;
-  if (placed.length !== puzzle.solution.length) return false;
+  if (placed.length !== puzzle.givens.length) return false;
 
-  const actual = placed.map(canonicalizeRectangle).sort();
-  const expected = puzzle.solution.map(canonicalizeRectangle).sort();
+  const covered = new Set<string>();
+  const accepted: PlacedRectangle[] = [];
 
-  return actual.every((key, index) => key === expected[index]);
+  for (const rectangle of placed) {
+    const validation = validateRectanglePlacement(puzzle, rectangle, accepted);
+    if (!validation.ok) return false;
+    if (validation.given.id !== rectangle.clueId) return false;
+
+    const cells = getRectangleCells(rectangle);
+    for (const cell of cells) {
+      covered.add(cell);
+    }
+
+    accepted.push(rectangle);
+  }
+
+  return covered.size === puzzle.width * puzzle.height;
 }

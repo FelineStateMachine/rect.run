@@ -46,6 +46,8 @@ body {
   background: #f7f4ea;
   overscroll-behavior-x: none;
   overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 button,

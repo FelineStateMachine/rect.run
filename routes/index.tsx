@@ -15,7 +15,7 @@ export default define.page(function Home() {
         <section class="shikaku-home__hero">
           <div class="shikaku-home__hero-copy">
             <div class="shikaku-home__eyebrow">SEED {latest}</div>
-            <h1 class="shikaku-home__title">SHIKAKU KEEP</h1>
+            <h1 class="shikaku-home__title">RECT.RUN</h1>
             <div class="shikaku-home__speech-stack" aria-label="Puzzle pitch">
               <p class="shikaku-home__speech">Daily grid.</p>
               <p class="shikaku-home__speech shikaku-home__speech--accent">

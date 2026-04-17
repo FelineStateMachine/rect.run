@@ -136,8 +136,32 @@ Deno.test("validateRectanglePlacement rejects overlap and multiple givens", () =
   );
 });
 
-Deno.test("isPuzzleSolved compares placed rectangles to solution", () => {
+Deno.test("isPuzzleSolved accepts any valid full tiling, not only the planned one", () => {
   assertEquals(isPuzzleSolved(samplePuzzle, samplePuzzle.solution ?? []), true);
+
+  const multiSolutionPuzzle: ShikakuPuzzle = {
+    id: "multi-solution",
+    date: "2026-04-16",
+    width: 2,
+    height: 2,
+    difficulty: "easy",
+    seed: "multi-solution",
+    givens: [
+      { id: 0, row: 0, col: 0, value: 2 },
+      { id: 1, row: 1, col: 1, value: 2 },
+    ],
+    solution: [
+      { clueId: 0, row: 0, col: 0, width: 2, height: 1, value: 2 },
+      { clueId: 1, row: 1, col: 0, width: 2, height: 1, value: 2 },
+    ],
+  };
+
+  const alternateValidTiling: PlacedRectangle[] = [
+    { clueId: 0, row: 0, col: 0, width: 1, height: 2, value: 2 },
+    { clueId: 1, row: 0, col: 1, width: 1, height: 2, value: 2 },
+  ];
+
+  assertEquals(isPuzzleSolved(multiSolutionPuzzle, alternateValidTiling), true);
   assertEquals(
     isPuzzleSolved(samplePuzzle, [
       { clueId: 0, row: 0, col: 0, width: 4, height: 1, value: 4 },

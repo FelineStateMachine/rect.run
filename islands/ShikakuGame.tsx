@@ -59,7 +59,7 @@ export default function ShikakuGame({ puzzle }: ShikakuGameProps) {
       rectangles.value = selectionsToRectangles(saved, puzzle);
       status.value = saved.status === "solved" ? "solved" : "in_progress";
       message.value = saved.status === "solved"
-        ? "Solved on this device. Tap a placed region to remove it."
+        ? "Reset or play another."
         : "Resumed from local storage.";
     }
     hydrated.value = true;

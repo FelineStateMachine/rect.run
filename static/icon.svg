@@ -5,7 +5,7 @@
   aria-labelledby="title desc"
 >
   <title id="title">rect.run icon</title>
-  <desc id="desc">A pixel-style castle keep above a puzzle grid.</desc>
+  <desc id="desc">A pixel-style rect.run icon above a puzzle grid.</desc>
   <rect width="128" height="128" fill="#122411" />
   <rect
     x="10"
