@@ -47,6 +47,6 @@ Project structure:
 
 Notes:
 
-- `/daily` redirects to the current available puzzle date
+- `/d` redirects to the current available puzzle date
 - `/api/puzzles/[date]` returns generated puzzle data for a date
 - branding is set for deployment at `rect.run`

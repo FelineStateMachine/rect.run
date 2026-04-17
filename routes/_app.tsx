@@ -1,3 +1,4 @@
+import { isDailyPathname } from "@/lib/site/paths.ts";
 import { define } from "../utils.ts";
 import {
   buildPageTitle,
@@ -7,7 +8,7 @@ import {
 } from "@/lib/site/brand.ts";
 
 export default define.page(function App({ Component, url }) {
-  const isDailyPage = url.pathname.startsWith("/daily");
+  const isDailyPage = isDailyPathname(url.pathname);
   const pageTitle = isDailyPage
     ? buildPageTitle("Daily Puzzle")
     : buildPageTitle();

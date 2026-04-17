@@ -1,4 +1,5 @@
 import { listAvailablePuzzleDates } from "@/lib/shikaku/catalog.ts";
+import { buildDailyPath } from "@/lib/site/paths.ts";
 import { define } from "../utils.ts";
 
 export default define.page(function Home() {
@@ -25,7 +26,7 @@ export default define.page(function Home() {
             <div class="shikaku-home__actions">
               <a
                 class="shikaku-home__action shikaku-home__action--gold"
-                href={`/daily/${latest}`}
+                href={buildDailyPath(latest)}
               >
                 <span class="shikaku-home__action-kicker">/ START</span>
                 <strong>Play</strong>
